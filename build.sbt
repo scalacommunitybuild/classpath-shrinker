@@ -1,6 +1,6 @@
 lazy val commonSettings = Seq(
-  scalaVersion in ThisBuild := "2.12.1",
-  crossScalaVersions in ThisBuild := Seq("2.11.8", "2.12.1"),
+  scalaVersion in ThisBuild := "2.12.6",
+  crossScalaVersions in ThisBuild := Seq("2.11.12", "2.12.6"),
   organization in ThisBuild := "ch.epfl.scala"
 )
 
@@ -8,8 +8,8 @@ lazy val testDependencies = Seq(
   "junit" % "junit" % "4.12" % "test",
   "com.novocode" % "junit-interface" % "0.11" % "test",
   // Depend on coursier to resolve unused classpath entries
-  "io.get-coursier" %% "coursier" % "1.0.0-M15" % "test",
-  "io.get-coursier" %% "coursier-cache" % "1.0.0-M15" % "test"
+  "io.get-coursier" %% "coursier" % "1.0.3" % "test",
+  "io.get-coursier" %% "coursier-cache" % "1.0.3" % "test"
 )
 
 lazy val publishSettings = Seq(
@@ -63,8 +63,8 @@ val scalaPartialVersion =
 
 lazy val plugin = project.settings(
   name := "classpath-shrinker",
-  scalaVersion in ThisBuild := "2.12.1",
-  crossScalaVersions in ThisBuild := Seq("2.11.8", "2.12.1"),
+  scalaVersion in ThisBuild := "2.12.6",
+  crossScalaVersions in ThisBuild := Seq("2.11.12", "2.12.6"),
   libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion.value,
   libraryDependencies ++= testDependencies,
   testOptions in Test ++= List(Tests.Argument("-v"), Tests.Argument("-s")),

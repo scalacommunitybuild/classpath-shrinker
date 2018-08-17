@@ -4,7 +4,7 @@ object ClassPathFeedback {
   def createWarningMsg(unusedEntries: Seq[String]): String = {
     if (unusedEntries.isEmpty) ""
     else {
-      val entries = unusedEntries.mkString("\n")
+      val entries = unusedEntries.filter(_.endsWith(".jar")).mkString("\n")
       s"Detected the following unused classpath entries: \n$entries"
     }
   }
