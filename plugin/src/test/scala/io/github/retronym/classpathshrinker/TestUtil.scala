@@ -100,9 +100,10 @@ object TestUtil {
       getArtifacts(deps, toRelativePath)
 
     private def getArtifacts(deps: Seq[Dependency], fileToString: File => String): Seq[String] = {
+      import coursier.interop.scalaz._
       val toResolve = Resolution(deps.toSet)
-      val fetch = Fetch.from(repositories, Cache.fetch())
-      val resolution = toResolve.process.run(fetch).run
+      val fetch = Fetch.from(repositories, Cache.fetch[Task]())
+      val resolution = toResolve.process.run(fetch).unsafePerformSync
       val resolutionErrors = resolution.errors
       if (resolutionErrors.nonEmpty)
         sys.error(s"Modules could not be resolved:\n$resolutionErrors.")
@@ -112,7 +113,7 @@ object TestUtil {
       val onlyErrors = errorsOrJars.filter(_.isLeft)
       if (onlyErrors.nonEmpty)
         sys.error(s"Jars could not be fetched from cache:\n$onlyErrors")
-      errorsOrJars.flatMap(_.map(fileToString).toList)
+      errorsOrJars.flatMap(_.map(fileToString).toOption)
     }
 
     private def toAbsolutePath(f: File): String =

@@ -8,8 +8,9 @@ lazy val testDependencies = Seq(
   "junit" % "junit" % "4.12" % "test",
   "com.novocode" % "junit-interface" % "0.11" % "test",
   // Depend on coursier to resolve unused classpath entries
-  "io.get-coursier" %% "coursier" % "1.0.3" % "test",
-  "io.get-coursier" %% "coursier-cache" % "1.0.3" % "test"
+  "io.get-coursier" %% "coursier" % "1.1.0-M7" % "test",
+  "io.get-coursier" %% "coursier-cache" % "1.1.0-M7" % "test",
+  "io.get-coursier" %% "coursier-scalaz-interop" % "1.1.0-M7" % "test"
 )
 
 lazy val publishSettings = Seq(
@@ -65,6 +66,7 @@ lazy val plugin = project.settings(
   name := "classpath-shrinker",
   scalaVersion in ThisBuild := "2.12.6",
   crossScalaVersions in ThisBuild := Seq("2.11.12", "2.12.6"),
+  scalacOptions in Compile ++= Seq("-feature", "-deprecation"),
   libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion.value,
   libraryDependencies ++= testDependencies,
   testOptions in Test ++= List(Tests.Argument("-v"), Tests.Argument("-s")),
