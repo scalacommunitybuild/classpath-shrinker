@@ -4,14 +4,14 @@ import java.io.File
 import java.nio.file.Paths
 
 import coursier.maven.MavenRepository
-import coursier.{Cache, Dependency, Fetch, Resolution}
+import coursier.{Dependency, Fetch, Resolve, LocalRepositories}
+import coursier.cache.Cache
 
 import scala.reflect.internal.util.{BatchSourceFile, NoPosition}
 import scala.reflect.io.VirtualDirectory
 import scala.tools.cmd.CommandLineParser
 import scala.tools.nsc.reporters.StoreReporter
 import scala.tools.nsc.{CompilerCommand, Global, Settings}
-import scalaz.concurrent.Task
 
 object TestUtil {
   import scala.language.postfixOps
@@ -88,10 +88,6 @@ object TestUtil {
   }
 
   object Coursier {
-    private final val repositories = Seq(
-      Cache.ivy2Local,
-      MavenRepository("https://repo1.maven.org/maven2")
-    )
 
     def getArtifacts(deps: Seq[Dependency]): Seq[String] =
       getArtifacts(deps, toAbsolutePath)
@@ -99,22 +95,13 @@ object TestUtil {
     def getArtifactsRelative(deps: Seq[Dependency]): Seq[String] =
       getArtifacts(deps, toRelativePath)
 
-    private def getArtifacts(deps: Seq[Dependency], fileToString: File => String): Seq[String] = {
-      import coursier.interop.scalaz._
-      val toResolve = Resolution(deps.toSet)
-      val fetch = Fetch.from(repositories, Cache.fetch[Task]())
-      val resolution = toResolve.process.run(fetch).unsafePerformSync
-      val resolutionErrors = resolution.errors
-      if (resolutionErrors.nonEmpty)
-        sys.error(s"Modules could not be resolved:\n$resolutionErrors.")
-      val errorsOrJars = Task
-        .gatherUnordered(resolution.artifacts.map(Cache.file(_).run))
-        .unsafePerformSync
-      val onlyErrors = errorsOrJars.filter(_.isLeft)
-      if (onlyErrors.nonEmpty)
-        sys.error(s"Jars could not be fetched from cache:\n$onlyErrors")
-      errorsOrJars.flatMap(_.map(fileToString).toOption)
-    }
+    private def getArtifacts(deps: Seq[Dependency], fileToString: File => String): Seq[String] =
+      Fetch()
+        .addRepositories(LocalRepositories.ivy2Local)
+        .addRepositories(MavenRepository("https://repo1.maven.org/maven2"))
+        .addDependencies(deps: _*)
+        .run()
+        .map(fileToString)
 
     private def toAbsolutePath(f: File): String =
       f.getAbsolutePath

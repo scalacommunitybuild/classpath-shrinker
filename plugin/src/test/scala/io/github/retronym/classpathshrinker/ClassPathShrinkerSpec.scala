@@ -1,6 +1,6 @@
 package io.github.retronym.classpathshrinker
 
-import coursier.{Dependency, Module}
+import coursier.{Dependency, Module, Organization, ModuleName}
 import io.github.retronym.classpathshrinker.TestUtil._
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -10,8 +10,8 @@ import org.junit.runners.JUnit4
 class ClassPathShrinkerSpec {
   object Dependencies {
     val commons =
-      Dependency(Module("org.apache.commons", "commons-lang3"), "3.5")
-    val guava = Dependency(Module("com.google.guava", "guava"), "21.0")
+      Dependency(Module(Organization("org.apache.commons"), ModuleName("commons-lang3")), "3.5")
+    val guava = Dependency(Module(Organization("com.google.guava"), ModuleName("guava")), "21.0")
   }
 
   import Dependencies._

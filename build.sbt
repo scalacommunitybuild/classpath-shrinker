@@ -1,6 +1,6 @@
 lazy val commonSettings = Seq(
-  scalaVersion in ThisBuild := "2.12.6",
-  crossScalaVersions in ThisBuild := Seq("2.11.12", "2.12.6"),
+  scalaVersion in ThisBuild := "2.12.8",
+  crossScalaVersions in ThisBuild := Seq("2.11.12", "2.12.8"),
   organization in ThisBuild := "ch.epfl.scala"
 )
 
@@ -8,9 +8,8 @@ lazy val testDependencies = Seq(
   "junit" % "junit" % "4.12" % "test",
   "com.novocode" % "junit-interface" % "0.11" % "test",
   // Depend on coursier to resolve unused classpath entries
-  "io.get-coursier" %% "coursier" % "1.1.0-M7" % "test",
-  "io.get-coursier" %% "coursier-cache" % "1.1.0-M7" % "test",
-  "io.get-coursier" %% "coursier-scalaz-interop" % "1.1.0-M7" % "test"
+  "io.get-coursier" %% "coursier" % "1.1.0-M14-1" % "test",
+  "io.get-coursier" %% "coursier-cache" % "1.1.0-M14-1" % "test",
 )
 
 lazy val publishSettings = Seq(
@@ -63,8 +62,8 @@ val scalaPartialVersion =
 
 lazy val plugin = project.settings(
   name := "classpath-shrinker",
-  scalaVersion in ThisBuild := "2.12.6",
-  crossScalaVersions in ThisBuild := Seq("2.11.12", "2.12.6"),
+  scalaVersion in ThisBuild := "2.12.8",
+  crossScalaVersions in ThisBuild := Seq("2.11.12", "2.12.8"),
   scalacOptions in Compile ++= Seq("-feature", "-deprecation"),
   libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion.value,
   libraryDependencies ++= testDependencies,
@@ -113,7 +112,6 @@ lazy val generateToolboxClasspath = Def.task {
 lazy val example = project
   .settings(
     libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.5",
-    libraryDependencies += "com.google.guava" % "guava" % "21.0",
     noPublish,
     scalacOptions in Compile ++= {
       val jar = (Keys.`package` in (plugin, Compile)).value
